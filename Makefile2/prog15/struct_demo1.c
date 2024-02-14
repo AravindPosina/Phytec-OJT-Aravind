@@ -1,0 +1,1 @@
+void showemp(emp *ptr);
