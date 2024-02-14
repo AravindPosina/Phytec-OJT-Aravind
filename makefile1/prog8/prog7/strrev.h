@@ -1,0 +1,1 @@
+void mystrrev(char *ptch);
