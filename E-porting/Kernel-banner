@@ -1,0 +1,27 @@
+Download the source file from the https://github.com/rugged-board/linux-rba5d2x
+
+Enter to the Path of the file
+
+Enable toolChain 
+
+ 
+ $cd init
+ $vi version.c
+ 
+ Change the banner name as you Required
+ 
+ $make distclean
+ $make rb-a5d2x-defconfig
+ $make
+ 
+ => zImage present in /arch/arm/boot/  copy into  BOOT dir of SD Card for SD Card Flash and for NOR Flash copy into /var/lib/tftpboot/ and then copy to NOR flash 
+
+=> a5d2x_rugged_board.dtb present in /arch/arm/boot/dts/  copy into  BOOT dir of SD Card for SD Card Flash and for NOR Flash copy into /var/lib/tftpboot/ and then copy to NOR flash 
+
+
+Goto Minicom 
+
+Set the environmental variables
+ping tge board
+
+Give the commands for for thye zimage and offtree commands and boot the board
