@@ -1,0 +1,7 @@
+read from input.txt
+if input.txt file not present give error file not found
+if file there then read the content of file
+open other file output.txt 
+whatever you read from input.txt
+write in output.txt
+if output.txt already present then give error

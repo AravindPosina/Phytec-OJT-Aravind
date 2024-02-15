@@ -1,0 +1,4 @@
+[Sat Jul 15 17:58:33 2023
+] welcome all to sdi
+[Sat Jul 15 17:58:57 2023
+] 2nd log message
