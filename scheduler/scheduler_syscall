@@ -1,0 +1,14 @@
+nice()                   Set a process's nice value
+sched_setscheduler()     Set a process's scheduling policy
+sched_getscheduler()     Get a process's scheduling policy
+sched_setparam()         Set a process's real-time priority
+
+sched_getparam()         Get a process's real-time priority
+sched_get_priority_max() Get the maximum real-time priority
+sched_get_priority_min() Get the minimum real-time priority
+sched_rr_get_interval()  Get a process's timeslice value
+sched_setaffinity()      Get a process's processor affinity
+sched_getaffinity()      Set a process's processor affinity
+sched_yield()            Temporarily yield the processor
+
+
