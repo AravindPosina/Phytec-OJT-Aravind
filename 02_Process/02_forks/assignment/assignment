@@ -1,0 +1,9 @@
+1.using fork() write a program to print the following message
+  parent here.
+  who is here.
+  child here.
+  who is here.
+
+2.Describes what happens when fork() is called multiple times.
+3.Describes what happens when fork()&&fork() is called.
+4.Describes what happens when fork()||fork() is called.
