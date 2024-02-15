@@ -1,0 +1,247 @@
+1. Write a program in C to create and store information in a text file.
+Test Data :
+Input a sentence for the file : This is the content of the file test.txt.
+Expected Output :
+
+ The file test.txt created successfully...!! 
+ 
+ 
+2. Write a program in C to read an existing file.
+Test Data :
+Input the file name to be opened : test.txt
+Expected Output :
+
+ The content of the file test.txt is  :                                                                       
+This is the content of the file test.txt.
+
+
+3. Write a program in C to write multiple lines in a text file. 
+Test Data :
+Input the number of lines to be written : 4
+:: The lines are ::
+test line 1
+test line 2
+test line 3
+test line 4
+Expected Output :
+
+ The content of the file test.txt is  :                                                                       
+test line 1                                                                                                   
+test line 2                                                                                                   
+test line 3                                                                                                   
+test line 4 
+
+
+4. Write a program in C to read the file and store the lines into an array. 
+Test Data :
+Input the file name to be opened : test.txt
+Expected Output :
+
+ The content of the file test.txt  are :                                                                      
+ test line 1                                                                                                  
+ test line 2                                                                                                  
+ test line 3                                                                                                  
+ test line 4
+ 
+ 
+5. Write a program in C to Find the Number of Lines in a Text File. 
+Test Data :
+Input the file name to be opened : test.txt
+Expected Output :
+
+ The lines in the file test.txt are : 4 
+
+
+6. Write a program in C to find the content of the file and number of lines in a Text File. 
+Test Data :
+Input the filen ame to be opened : test.txt
+Expected Output :
+
+ The content of the file test.txt  are :                                                                      
+ test line 1                                                                                                  
+ test line 2                                                                                                  
+ test line 3                                                                                                  
+ test line 4                                                                                                  
+ The lines in the file are : 4
+ 
+ 
+ 7. Write a program in C to count a number of words and characters in a file. 
+Test Data :
+Input the file name to be opened : test.txt
+Expected Output :
+
+ The content of the file test.txt are :                                                                       
+test line 1                                                                                                   
+test line 2                                                                                                   
+test line 3                                                                                                   
+test line 4                                                                                                   
+ The number of words in the  file test.txt are : 12                                                           
+ The number of characters in the  file test.txt are : 36
+
+
+8. Write a program in C to delete a specific line from a file. 
+
+Assume that the content of the file test.txt is :                                                                       
+test line 1                                                                                                   
+test line 2                                                                                                   
+test line 3                                                                                                   
+test line 4                                                                                                   
+Test Data :
+Input the file name to be opened : test.txt
+Input the line you want to remove : 2
+Expected Output :
+
+ The content of the file test.txt is :                                                                       
+test line 1                                                                                                   
+test line 3                                                                                                   
+test line 4
+
+
+9. Write a program in C to replace a specific line with another text in a file.
+
+Assume that the content of the file test.txt is :                                                                       
+test line 1                                                                                                   
+test line 2                                                                                                   
+test line 3                                                                                                   
+test line 4                                                                                                   
+Test Data :
+Input the file name to be opened : test.txt
+Input the content of the new line : Yes, I am the new text instead of test line 2
+Input the line no you want to replace : 2
+Expected Output :
+
+Replacement did successfully..!! 
+
+
+10. Write a program in C to append multiple lines at the end of a text file.
+
+Assume that the content of the file test.txt is :                                                                       
+test line 1                                                                                                   
+test line 2                                                                                                   
+test line 3                                                                                                   
+test line 4                                                                                                   
+Test Data :
+Input the file name to be opened : test.txt
+Input the number of lines to be written : 3
+The lines are :
+test line 5
+test line 6
+test line 7
+Expected Output :
+
+The content of the file test.txt is  :                                                                       
+test line 1                                                                                                   
+test line 2                                                                                                   
+test line 3                                                                                                   
+test line 4                                                                                                   
+                                                                                                              
+test line 5                                                                                                   
+test line 6                                                                                                   
+test line 7
+
+
+11. Write a program in C to copy a file in another name.
+
+Assume that the content of the file test.txt is :                                                                       
+test line 1                                                                                                   
+test line 2                                                                                                   
+test line 3                                                                                                   
+test line 4                                                                                                   
+Test Data :
+Input the source file name : test.txt
+Input the new file name : test1.txt
+Expected Output :
+
+ The file test.txt  copied successfully in the file test1.txt.
+If you read the new file you will see the content of the file :
+
+test line 1                                                                                                   
+test line 2                                                                                                   
+test line 3                                                                                                   
+test line 4 
+
+
+12. Write a program in C to merge two files and write it in a new file.
+
+Assume that the content of the file test.txt and test1.txr is :                                                                       
+ The content of the file test.txt is  : 
+This is the file test.txt. 
+
+ The content of the file test1.txt is  : 
+This is the file test1.txt.                                                                                                    
+Test Data :
+Input the 1st file name : test.txt
+Input the 2nd file name : test1.txt
+Input the new file name where to merge the above two files : mergefiles.txt
+Expected Output :
+
+ The two files merged into mergefiles.txt file successfully..!! 
+Here is the content of the merge file mergefiles.txt :
+
+ The content of the file mergefiles.txt is  :                                                                 
+This is the file test.txt.                                                                                    
+This is the file test1.txt.
+
+
+13. Write a program in C to encrypt a text file.
+
+ Assume that, the content of the file test.txt is  :                                                                       
+Welcome to PHYTEC.
+Test Data :
+Input the name of file to encrypt : test.txt
+Expected Output :
+
+File test.txt successfully encrypted ..!!
+If you read the file test.txt you will see the following :
+
+������Ʉ�ӄۗ�������ɒ��ђn
+
+
+14. Write a program in C to decrypt a previously encrypted file file.
+
+ Assume that, the content of the file test.txt was  :                                                                       
+������Ʉ�ӄۗ�������ɒ��ђn 
+
+After encryption, the content of the file is : 
+Welcome to PHYTEC.
+Test Data :
+Input the name of file to decrypt : test.txt
+Expected Output :
+
+The file test.txt decrypted successfully..!!
+Now, if you read the file test.txt you will see the following :
+
+Welcome to PHYTEC.
+
+
+15. Write a program in C to remove a file from the disk.
+Test Data :
+Input the name of file to delete : test.txt
+Expected Output :
+
+ The file test.txt is deleted successfully..!! 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
