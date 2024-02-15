@@ -1,0 +1,70 @@
+handler5.c
+
+In this sample program, you're demonstrating how the `signal()` function returns the previous signal handler function 
+when setting a new one for a specific signal (SIGHUP in this case). You're also raising the SIGHUP signal multiple times 
+to see how the different handlers are invoked. 
+
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+void sighup1(int signum) {
+    printf("This is HANDLER - I for SIGHUP\n");
+}
+
+void sighup2(int signum) {
+    printf("This is HANDLER - II for SIGHUP\n");
+}
+
+int main() {
+    void (*old)(int); // Function pointer to store the old signal handler
+
+    signal(SIGHUP, sighup1); // Set sighup1 as the handler for SIGHUP
+    sleep(3);
+    raise(SIGHUP); // Raise SIGHUP to trigger sighup1
+
+    old = signal(SIGHUP, sighup2); // Set sighup2 as the handler for SIGHUP, store old handler
+    sleep(3);
+    raise(SIGHUP); // Raise SIGHUP to trigger sighup2
+
+    signal(SIGHUP, old); // Restore the old handler for SIGHUP
+    sleep(3);
+    raise(SIGHUP); // Raise SIGHUP to trigger the old handler (sighup1)
+
+    signal(SIGHUP, SIG_DFL); // Set the default handler for SIGHUP
+    sleep(3);
+    raise(SIGHUP); // Raise SIGHUP to trigger the default handler (terminate the program)
+
+    sleep(100); // Sleep to keep the program running for observation
+
+    return 0;
+}
+
+
+Here's what your program does:
+
+1. It includes necessary header files for signal handling, standard I/O operations, memory management, and process management.
+
+2. It defines two signal handler functions: `sighup1` and `sighup2`, each with its own message.
+
+3. In the `main` function:
+   - It sets `sighup1` as the handler for SIGHUP using `signal(SIGHUP, sighup1)`.
+   - Sleeps for 3 seconds to allow some time for observation.
+   - Raises SIGHUP using `raise(SIGHUP)` to trigger `sighup1`.
+
+4. It sets `sighup2` as the handler for SIGHUP and stores the old handler in the `old` variable using `old = signal(SIGHUP, sighup2)`.
+   - Sleeps for 3 seconds again.
+   - Raises SIGHUP to trigger `sighup2`.
+
+5. It restores the old handler (sighup1) for SIGHUP using `signal(SIGHUP, old)`.
+   - Sleeps for 3 seconds again.
+   - Raises SIGHUP to trigger the old handler (sighup1).
+
+6. It sets the default handler (terminate the program) for SIGHUP using `signal(SIGHUP, SIG_DFL)`.
+   - Sleeps for 3 seconds again.
+   - Raises SIGHUP, which will terminate the program due to the default handler.
+
+7. Finally, it sleeps for 100 seconds to keep the program running for observation.
+
+When you run this program, you'll see different handlers being called for SIGHUP based on the changes made using the `signal()` function. It demonstrates how you can set, change, and restore signal handlers using `signal()` and how the old handler can be stored and reused.

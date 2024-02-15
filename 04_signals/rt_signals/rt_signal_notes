@@ -1,0 +1,114 @@
+1.0 Signals
+Signals are notifications delivered asynchronously to a process by the kernel. Signals are grouped in two categories. First, there are standard signals, which have been there since the early days of Unix. Second, there are POSIX real-time signals which are specified in POSIX.1b, or, IEEE Std 1003.1b-1993, for Real-time Extensions for POSIX compliant Operating Systems. In this post we will look at POSIX real-time signals in Linux.
+
+2.0 Characteristics of POSIX real-time signals
+The Linux kernel supports real-time signals range defined by macros SIGRTMIN and SIGRTMAX. Unlike the standard signals, the real-time signals do not have predefined names individually. Applications can identify the real-time signals by using an expression like (SIGRTMIN + n), where n is an integer between 0 and (SIGRTMAX - SIGRTMIN).
+
+The default action for a real-time signal is to terminate the receiving process.
+
+Real-time signals are queued to the receiving process. This applies even when the same real-time signal is received multiple times. In contrast, if a standard signal is blocked and multiple instances of it are to be delivered to a process, only one becomes pending and the rest are discarded.
+
+If multiple real-time signals are queued to a process, they are delivered in the ascending order of their signal numbers, that is, lower real-time signal first. In contrast, the order of delivery of queued multiple standard signals is unspecified. If multiple instances of the same real-time signal are queued to a process, they are delivered in the chronological order. If both standard and real-time signals are queued to a process, the standard signals are delivered first. This matches with the concept that the lower numbered signals are delivered first.
+
+If a real-time signal is sent using the sigqueue function, a value or a pointer can be sent along with the signal. This value or the pointer can be retrieved by the receiving process from the second parameter of the real-time signal handler, the pointer to siginfo_t. The value or the pointer is stored in si_value or si_ptr members respectively.
+
+3.0 Setting the signal action
+The signal handler is installed with the sigaction system call.
+
+#include <signal.h>
+
+int sigaction (int signum, const struct sigaction *act,
+               struct sigaction *oldact);
+The struct sigaction is,
+
+struct sigaction {
+    void     (*sa_handler) (int);
+    void     (*sa_sigaction) (int, siginfo_t *, void *);
+    sigset_t   sa_mask;
+    int        sa_flags;
+    void     (*sa_restorer) (void);
+};
+If SA_SIGINFO is specified in sa_flags, the pointer to function, sa_sigaction is the signal handler to be set in the sigaction call. When the signal comes, the signal handler is called with pointer to the siginfo_t structure as the second argument. The signal handler can get information about the signal from the siginfo_t structure. The siginfo_t structure is,
+
+siginfo_t {
+    int      si_signo;     /* Signal number */
+    int      si_errno;     /* An errno value */
+    int      si_code;      /* Signal code */
+    int      si_trapno;    /* Trap number that caused
+                              hardware-generated signal
+                              (unused on most architectures) */
+    pid_t    si_pid;       /* Sending process ID */
+    uid_t    si_uid;       /* Real user ID of sending process */ 
+    int      si_status;    /* Exit value or signal */
+    clock_t  si_utime;     /* User time consumed */
+    clock_t  si_stime;     /* System time consumed */
+    sigval_t si_value;     /* Signal value */
+    int      si_int;       /* POSIX.1b signal */
+    void    *si_ptr;       /* POSIX.1b signal */
+    int      si_overrun;   /* Timer overrun count;
+                              POSIX.1b timers */
+    int      si_timerid;   /* Timer ID; POSIX.1b timers */
+    void    *si_addr;      /* Memory location which caused fault */
+    long     si_band;      /* Band event (was int in
+                              glibc 2.3.2 and earlier) */
+    int      si_fd;        /* File descriptor */
+    short    si_addr_lsb;  /* Least significant bit of address 
+                              (since Linux 2.6.32) */ 
+    void    *si_call_addr; /* Address of system call instruction
+                              (since Linux 3.5) */
+    int      si_syscall;   /* Number of attempted system call
+                              (since Linux 3.5) */
+    unsigned int si_arch;  /* Architecture of attempted system call
+                              (since Linux 3.5) */
+}          
+The above structure is for information about the members only. For the actual structure, please refer to the sub-directories under /usr/include. In the actual structure, members given above might have different names and / or organized in unions, and, some members might not be present.
+
+
+The member si_code specifies the reason for the signal. Some of the values of si_code are,
+
+Signal Reasons
+si_code	Reason for the signal
+SI_USER	Sent by kill system call
+SI_KERNEL	Sent by the kernel
+SI_QUEUE	Sent by sigqueue
+SI_TIMER	Expiration of a POSIX timer
+SI_ASYNCIO	Asynchronous I/O completed
+SI_MESGQ	Message arrival on an empty message queue, signal because of mq_notify registration
+An important characteristic of real-time signals is to communicate information and not just the signal id. It is the capability to pass an integer or a pointer, which is elaborated below in the description of the sigqueue function. The signal handler can get more information about the signal from this integer or pointer.
+
+4.0 System calls
+4.1 sigqueue
+#include <signal.h>
+
+union sigval {
+    int   sival_int; 
+    void *sival_ptr;
+};
+
+int sigqueue (pid_t pid, int sig, const union sigval value);
+The sigqueue function sends the signal sig to the process identified by pid. It also sends data, a value, along with the signal. The value is a union of an integer and a pointer. If the receiving process has installed a signal handler using the SA_SIGINFO flag, it can get the value using the si_value field of the siginfo_t structure.
+
+4.2 sigwaitinfo
+#include <signal.h>
+
+int sigwaitinfo (const sigset_t *set, siginfo_t *info);
+sigwaitinfo is an improvement on the sigwait system call. Like sigwait, it blocks till a signal specified in the set becomes pending. However, sigwaitinfo has a second parameter, a pointer to typedef siginfo_t, in which data about the signal is returned. Like, sigwait, the signals specified in the set should be blocked before making the call. On success, sigwaitinfo returns the accepted signal, a value greater than zero, and the signal is removed from the set of pending signals for the thread. In case of failure, -1 is returned and errno is set accordingly.
+
+4.3 sigtimedwait
+#include <signal.h>
+
+struct timespec { 
+    long    tv_sec;         /* seconds */ 
+    long    tv_nsec;        /* nanoseconds */
+}
+
+int sigtimedwait (const sigset_t *set, siginfo_t *info,
+                  const struct timespec *timeout);
+sigtimedwait is similar to sigwaitinfo, except that the maximum time of wait is as specified in the structure pointed by the third parameter, timeout. If timeout occurs and no signal is pending, sigtimedwait returns -1 with errno set to EAGAIN.
+
+
+
+5.0 An example: Using real-time signal
+As an example, consider a limited over cricket match being played between two teams. Cricket matches are good to watch and we tend to concentrate on the players. However, there are a lot of organizers who stay in the background, do the hard word and make the show possible. We will refer to two such persons here. One is a manager and the other is the scorer. The manager's list of jobs to do is a myriad; he has to take care that spectators are seated, lights are working, ground support staff is available, and what not. Suffice to say, he is a very busy person. As much as he would like, he is not able to follow the match because he has to look after so many things. Then there is the scorer, whose work is well defined. He has to note the runs scored, balls bowled, partnerships, maiden overs, etc. Because of the nature of his job, the scorer is able to follow the match. So the scorer decides to help his friend, the manager. The scorer can not describe the match ball by ball to the manager, nor is the manager free enough for that. The scorer tells the manager that whenever a four or a six is scored, and also, whenever a wicket falls, he would signal to the manager, so that the latter has some idea about what is happenning. It turns out that the manager and the scorer can use POSIX real time signals for this quite well. And, here are the programs.
+
+

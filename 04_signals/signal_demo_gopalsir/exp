@@ -1,0 +1,355 @@
+01.
+#include"signal.h"
+#include"stdio.h"
+#include"unistd.h"
+
+void fun(int sig)
+{
+	printf("wake up alarm \n");
+	alarm(2);
+
+}
+
+int main()
+{
+	int pid;
+
+	//(void)signal(SIGALRM,fun);
+	printf("The process id is %d\n",getpid());
+	(void)signal(SIGALRM,fun);
+	alarm(2);
+		//printf("hello world\n");
+		//sleep(1);
+	while(1);
+	return 0;
+
+}
+
+
+The code you provided demonstrates the use of the `alarm` function in Unix to periodically trigger a SIGALRM signal. It sets an alarm to wake up the process every 2 seconds. Here's a breakdown of what the code does:
+
+1. `#include <signal.h>`, `#include <stdio.h>`, and `#include <unistd.h>`: These are the necessary header files for signal handling, I/O operations, and process management.
+
+2. `void fun(int sig)`: This is a signal handler function that will be called when the process receives a SIGALRM signal. It prints "wake up alarm" and sets another alarm for 2 seconds.
+
+3. `int main()`: The main function of the program.
+
+4. `int pid;`: Declare a variable `pid` to store the process ID (PID).
+
+5. `printf("The process id is %d\n", getpid());`: This line prints the process ID of the current process using `getpid()`.
+
+6. `(void)signal(SIGALRM, fun);`: This line registers the `fun` function as the signal handler for the SIGALRM signal. When the alarm goes off, it triggers this signal handler.
+
+7. `alarm(2);`: This line sets an initial alarm for 2 seconds, which means that the process will receive a SIGALRM signal every 2 seconds.
+
+8. `while(1);`: This line creates an infinite loop, which effectively keeps the program running. Inside this loop, the process will be woken up by the alarm every 2 seconds, and the "wake up alarm" message will be printed repeatedly.
+
+Here's what will happen when you run this program:
+
+1. The program starts, and it prints the process ID.
+
+2. It registers the `fun` function as the handler for SIGALRM and sets an initial alarm for 2 seconds.
+
+3. The program enters an infinite loop with `while(1)`, where it will keep running.
+
+4. Every 2 seconds, the alarm goes off, triggering the SIGALRM signal, and the `fun` function is called. It prints "wake up alarm" and sets another alarm for 2 seconds.
+
+5. The process continues to run in the infinite loop, and this cycle repeats every 2 seconds.
+
+You can terminate the program manually when needed. This code demonstrates how to use the `alarm` function to create periodic wake-up calls for a process using the SIGALRM signal.
+
+
+
+
+
+
+02.
+
+The code you provided sets an alarm to trigger a SIGALRM signal every 2 seconds and calls a signal handler function `fun` 
+when the alarm goes off. 
+
+#include <signal.h>
+#include <stdio.h>
+#include <unistd.h>
+
+void fun(int sig) {
+    printf("wake up alarm\n");
+    alarm(2); // Re-arm the alarm to trigger every 2 seconds.
+}
+
+int main() {
+    int pid;
+
+    printf("The process id is %d\n", getpid());
+    (void)signal(SIGALRM, fun);
+    alarm(2);
+
+    printf("hello world\n");
+    sleep(1);
+
+    while (1);
+    return 0;
+}
+
+
+Here's what the program does:
+
+1. It includes necessary header files for signal handling, I/O operations, and sleeping.
+
+2. In the `fun` function, which is the signal handler for SIGALRM, it prints "wake up alarm" and then re-arms the alarm with `alarm(2)` to trigger every 2 seconds.
+
+3. In the `main` function:
+   - It prints the process ID using `getpid()` to identify the process.
+   - Registers the `fun` function as the handler for SIGALRM using `(void)signal(SIGALRM, fun)`.
+   - Sets an initial alarm to trigger after 2 seconds using `alarm(2)`.
+
+4. It prints "hello world" and then sleeps for 1 second using `sleep(1)`.
+
+5. After the initial alarm is triggered, the `fun` function is called, printing "wake up alarm" and re-arming the alarm.
+
+6. The program enters an infinite loop with `while (1)` to keep it running.
+
+As a result, the program will repeatedly print "hello world" every second and "wake up alarm" every 2 seconds, demonstrating the use of the `alarm` function to set periodic alarms. The alarm is re-armed in the `fun` function to continue triggering every 2 seconds.
+
+
+
+
+
+
+03.
+The code you provided demonstrates the use of the `alarm` function to schedule a SIGALRM signal after 2 seconds and a signal handler function `sig_handler` 
+that gets called when the alarm goes off.
+
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+
+void sig_handler(int signum) {
+    printf("Inside handler function\n");
+}
+
+int main() {
+    signal(SIGALRM, sig_handler); // Register signal handler
+    alarm(2); // Schedule alarm after 2 seconds
+
+    for (int i = 1;; i++) {
+        printf("%d : Inside main function\n", i);
+        sleep(1); // Delay for 1 second
+    }
+    return 0;
+}
+
+
+Here's what the program does:
+
+1. It includes necessary header files for standard I/O operations, process management, and signal handling.
+
+2. It defines a signal handler function `sig_handler` that gets called when the program receives a SIGALRM signal. The handler simply prints "Inside handler function."
+
+3. In the `main` function:
+   - It registers the `sig_handler` function to handle the SIGALRM signal using `signal(SIGALRM, sig_handler)`.
+   - It schedules an alarm to trigger a SIGALRM signal after 2 seconds using `alarm(2)`.
+
+4. The program enters an infinite loop (`for (int i = 1;; i++)`) where it:
+   - Prints the current value of `i` along with "Inside main function."
+   - Sleeps for 1 second using `sleep(1)` to create a 1-second delay before the next iteration.
+
+As a result, the program will continuously print "Inside main function" along with an incrementing number every second. After 2 seconds, the SIGALRM signal will be triggered, and the `sig_handler` function will be called, printing "Inside handler function." This demonstrates how the `alarm` function can be used to schedule alarms and handle signals when they occur.
+
+
+
+
+
+
+
+
+04.
+The code you provided demonstrates how to handle the SIGCHLD signal, which is sent to the parent process when a child process terminates. 
+
+#include <signal.h>
+#include <stdio.h>
+#include <unistd.h>
+
+void sig_handler1(int sig) {
+    printf("I am inside signal handler1\n");
+    wait(NULL); // Wait for the terminated child process.
+}
+
+int main() {
+    int pid;
+    pid = fork();
+    printf("The process id is %d\n", getpid());
+
+    if (pid == -1) {
+        printf("Error: No child process created\n");
+    }
+
+    if (pid == 0) {
+        printf("Successfully created child and my PID is %d\n", getpid());
+    } else {
+        printf("I am in the parent process\n");
+        (void)signal(SIGCHLD, sig_handler1); // Register signal handler for SIGCHLD.
+
+        while (1) {
+            printf("I am in the parent process\n");
+            sleep(2);
+        }
+    }
+    return 0;
+}
+
+
+Here's what the program does:
+
+1. It includes necessary header files for signal handling, standard I/O operations, and process management.
+
+2. It defines a signal handler function `sig_handler1` that gets called when the parent process receives a SIGCHLD signal. Inside the handler, 
+`wait(NULL)` is called to wait for the terminated child process.
+
+3. In the `main` function:
+   - It forks a child process using `fork()`.
+   - It prints the process ID of the current process using `getpid()`.
+
+4. If `fork()` returns -1, it indicates an error in creating a child process, and an error message is printed.
+
+5. If `fork()` returns 0, it means the child process was successfully created, and a message is printed in the child process context.
+
+6. If `fork()` returns a positive value (the child's PID), it means the parent process is executing. It prints "I am in the parent process."
+
+7. It registers the `sig_handler1` function to handle the SIGCHLD signal using `(void)signal(SIGCHLD, sig_handler1)`.
+
+8. The parent process enters an infinite loop (`while (1)`) where it:
+   - Prints "I am in the parent process."
+   - Sleeps for 2 seconds using `sleep(2)` before the next iteration.
+
+As a result, the program demonstrates how the parent process can handle the SIGCHLD signal when the child process terminates. The `sig_handler1` function is called in response to the SIGCHLD signal, and it waits for the terminated child process.
+
+
+
+
+
+
+
+05.
+#include"signal.h"
+#include"stdio.h"
+#include"unistd.h"
+
+void sig_handler1(int sig)
+{
+	printf("I am inside signal handler1\n");
+
+}
+
+void sig_handler2(int sig)
+{
+	printf("I am inside signal handler2 \n");
+
+}
+int main()
+{
+	int pid;
+	printf("The process id is %d\n",getpid());
+	(void)signal(SIGHUP,sig_handler1);
+	
+	(void)signal(SIGKILL,sig_handler2);
+
+	while(1)
+	{
+		(void)signal(SIGHUP,sig_handler1);
+		(void)signal(SIGKILL,sig_handler2);
+		printf("hello world\n");
+		sleep(2);
+	}
+	return 0;
+
+}
+
+
+
+In your code, you're trying to set signal handlers for SIGHUP and SIGKILL, but there are some issues with this approach:
+
+1. You cannot set a signal handler for SIGKILL (signal number 9) using the `signal` function because SIGKILL cannot be caught, blocked, or ignored. 
+It is a special signal that immediately terminates the process when received, and no user-defined signal handler can intercept it.
+
+2. SIGHUP (signal number 1) can have a user-defined signal handler, but its behavior depends on the context in which it is received. In many cases, S
+IGHUP is used to indicate that a terminal has disconnected, and it may not be suitable for general signal handling.
+
+
+
+
+
+
+
+06.
+#include"signal.h"
+#include"stdio.h"
+#include"unistd.h"
+
+void fun(int sig)
+{
+	printf("I get signal %d\n",sig);
+
+}
+
+int main()
+{
+	(void)signal(SIGINT,fun);
+	while(1)
+	{
+		(void)signal(SIGINT,SIG_IGN);
+		printf("hello world\n");
+		sleep(1);
+	}
+	return 0;
+
+}
+
+
+In your code, you're attempting to handle the SIGINT (Ctrl+C) signal using a signal handler function called fun. However, 
+there is an issue with the way you're setting and resetting the signal handler within the loop. Specifically, 
+you are setting the signal handler to SIG_IGN (which means "ignore") on each iteration of the loop. 
+This will prevent your fun function from being called.
+
+
+
+
+
+
+
+07.
+#include <signal.h>
+#include <stdio.h>
+#include <unistd.h>
+
+void fun(int sig) {
+    printf("I get signal %d\n", sig);
+}
+
+int main() {
+    (void)signal(SIGINT, fun);
+   // (void)signal(SIGTERM, fun);
+    
+    printf("The process id is %d\n", getpid());
+    
+    while (1) {
+    	(void)signal(SIGTERM,fun);
+        printf("hello world\n");
+        sleep(1);
+    }
+    
+    return 0;
+}
+
+
+
+In your code, you're attempting to handle both the SIGINT (Ctrl+C) and SIGTERM signals using a signal handler function called fun. 
+However, there is an issue with the way you're setting the signal handlers within the loop. You're setting the SIGTERM signal handler 
+to fun on each iteration of the loop, which is not necessary and can lead to unintended behavior.
+
+
+
+
+
+
+

@@ -1,0 +1,52 @@
+In this sample program, you demonstrate how to create and set a signal mask using `sigprocmask()` and then change it back to the old signal mask. 
+
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int main() {
+    sigset_t newset, oldset;
+    
+    sigemptyset(&newset); // Initialize an empty signal set.
+    sigaddset(&newset, SIGINT); // Add SIGINT to the signal set.
+    
+    sigprocmask(SIG_SETMASK, &newset, &oldset); // Set the new signal mask and store the old one.
+    
+    int i = 0;
+    for (i = 1; i <= 10; i++) {
+        printf("I am masking SIGINT for 10 seconds!\n");
+        sleep(1);
+    }
+    
+    sigprocmask(SIG_SETMASK, &oldset, NULL); // Restore the old signal mask.
+    
+    for (i = 1; i <= 10; i++) {
+        printf("Now I am having the old sigset without any mask\n");
+        sleep(1);
+    }
+    
+    return 0;
+}
+
+
+Here's what your program does:
+
+1. It includes necessary header files for signal handling, standard I/O operations, memory management, and process management.
+
+2. It defines two `sigset_t` variables: `newset` and `oldset` to store the new and old signal masks.
+
+3. It initializes `newset` as an empty signal set using `sigemptyset(&newset)`.
+
+4. It adds SIGINT to the `newset` signal set using `sigaddset(&newset, SIGINT)`.
+
+5. It sets the new signal mask to `newset` and stores the old signal mask in `oldset` using `sigprocmask(SIG_SETMASK, &newset, &oldset)`.
+
+6. It enters a loop that runs for 10 seconds, during which it prints "I am masking SIGINT for 10 seconds!" every second using `sleep(1)`.
+
+7. After 10 seconds, it restores the old signal mask using `sigprocmask(SIG_SETMASK, &oldset, NULL)`.
+
+8. It enters another loop that runs for 10 seconds, during which it prints "Now I am having the old sigset without any mask" every second using `sleep(1)`.
+
+This program demonstrates how to set and change the signal mask using `sigprocmask()`, which allows you to block or unblock specific signals 
+to control how they are handled by the process during different periods of execution.
