@@ -1,0 +1,14 @@
+Create normal dump files
+One of the big mysteries with Linux systems is where the core dumps are located. Linux has a trick in place to capture core dumps. This particular setting is done via the sysctl kernel.core_pattern setting or /proc/sys/kernel/core_pattern. Most systems will have a pipe (|) in this setting to indicate that a program needs to take care of the generated data. So if you wonder where your core dump goes, follow the pipe!
+
+Core dumps on Ubuntu systems are typically going to Apport. For Red Hat based systems it may be redirected to Automatic Bug Reporting Tool (ABRT).
+
+You can temporarily change this setting, by echoing “core” to that file, or use the sysctl utility.
+
+sysctl -w kernel.core_pattern=core
+
+An important note is that this change might not be enough. It depends also on your fs.suid_dumpable setting. A warning will be logged to your kernel logger if that is the case.
+
+When needed set your core_pattern to a full path, optionally with variables defining who was running it, the PID, etc.
+
+sysctl -w kernel.core_pattern=/var/crash/core.%u.%e.%p
