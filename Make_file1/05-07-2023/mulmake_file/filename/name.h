@@ -1,0 +1,2 @@
+void name(void);
+
