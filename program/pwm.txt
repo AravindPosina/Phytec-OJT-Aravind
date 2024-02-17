@@ -1,0 +1,112 @@
+using PWMs with the sysfs interface
+-----------------------------------
+
+If CONFIG_SYSFS is enabled in your kernel configuration a simple sysfs
+interface is provided to use the PWMs from userspace. It is exposed at
+/sys/class/pwm/. Each probed PWM controller/chip will be exported as
+pwmchipN, where N is the base of the PWM chip. Inside the directory you
+will find:
+
+  npwm
+    The number of PWM channels this chip supports (read-only).
+
+  export
+    Exports a PWM channel for use with sysfs (write-only).
+
+  unexport
+   Unexports a PWM channel from sysfs (write-only).
+
+The PWM channels are numbered using a per-chip index from 0 to npwm-1.
+
+When a PWM channel is exported a pwmX directory will be created in the
+pwmchipN directory it is associated with, where X is the number of the
+channel that was exported. The following properties will then be available:
+
+  period
+    The total period of the PWM signal (read/write).
+    Value is in nanoseconds and is the sum of the active and inactive
+    time of the PWM.
+
+  duty_cycle
+    The active time of the PWM signal (read/write).
+    Value is in nanoseconds and must be less than the period.
+
+  polarity
+    Changes the polarity of the PWM signal (read/write).
+    Writes to this property only work if the PWM chip supports changing
+    the polarity. The polarity can only be changed if the PWM is not
+    enabled. Value is the string "normal" or "inversed".
+
+  enable
+    Enable/disable the PWM signal (read/write).
+
+	- 0 - disabled
+	- 1 - enabled
+	
+	
+	echo 0 > /sys/class/pwm/pwmchip0/export
+	
+	echo 0 > /sys/class/pwm/pwmchip1/export
+	
+	echo 0 > /sys/class/pwm/pwmchip0/unexport
+	
+	echo 0 > /sys/class/pwm/pwmchip1/unexport
+	
+Configuring the PWM period, duty cycle, and polarityLink to Configuring the PWM period, duty cycle, and polarity
+
+The period of the PWM signals in Linux is measured in nanoseconds. 
+To set the period of the PWM2 signal to one second, run the following command after PWM2 has been exported:
+echo 1000000000 > /sys/class/pwm/pwmchip0/pwm0/period
+
+The duty cycle of the PWM signals in Linux is also measured in nanoseconds.
+ To set the duty cycle of the PWM2 to 50%, or a half-second 'on' time, run the following command:
+ echo 500000000 > /sys/class/pwm/pwmchip0/pwm0/duty_cycle
+ 
+ The polarity of the PWM signals in Linux controls whether the 'on' time of the signal is active high or active low.
+ To set the polarity of PWM2 to active high, run the following command:
+echo 'normal' > /sys/class/pwm/pwmchip0/pwm0/polarity
+
+To set the polarity of PWM2 to active low, run the following command:
+echo 'inversed' > /sys/class/pwm/pwmchip0/pwm0/polarity
+
+To set the polarity of PWM2 to active low, run the following command:
+
+echo 'inversed' > /sys/class/pwm/pwmchip0/pwm0/polarity
+
+Starting the PWM signalLink to Starting the PWM signal
+You must start a PWM signal in Linux after configuring it.
+To start PWM2, run the following command after following the instructions above:
+echo 1 > /sys/class/pwm/pwmchip0/pwm0/enable
+
+
+Finally, to disable PWM2 when it is no longer needed, run the following command:
+echo 0 > /sys/class/pwm/pwmchip0/pwm0/enable
+
+
+ADC
+=======
+cat /sys/bus/iio/devices/iio\:device0/in_voltage0_raw
+
+Here is an example of three measurements of roughly 1.8V (4096), 0.9V (2048) and 0.0V (0).
+
+
+Hands-On
+There are two ways to request an ADC conversion:
+
+1.Software trigger – Internal synchronous trigger, by writing ADC_CR.START.
+2.Hardware trigger – Asynchronous trigger, asserted by an internal or external signal (pins or periodic event).
+3.Refer to ADC_TRGR.TRGMOD for more information.
+
+Software Trigger
+============
+When reading the ADC channel raw file directly, a software trigger action is performed by the ADC driver:
+# cat /sys/bus/iio/devices/iio:device0/in_voltage6_raw
+16380
+# cat /sys/bus/iio/devices/iio:device0/in_voltage_scale
+0.201416015
+
+The converted raw data is 16380 and the scaling ratio is 0.201416015.
+Voltage value is:
+16380 x 0.201416015 = 3.299 mV
+
+	

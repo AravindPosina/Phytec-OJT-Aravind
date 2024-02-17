@@ -1,4 +1,3 @@
-
  
 1. Set the cross compilation setup.
  
@@ -6,16 +5,20 @@
 
 2. Compile the Application
 
-   ${CC} adc_test.c adc.c adc.h -o adc_test
+   ${CC} pwm.c  -o pwm
    
-3. Execute
+5. Execute
+   
+   ./pwm 100  1
 
-   ./adc_test 6 
+  NOTE: 
+     1. pwm -  Executable file 
+     2. 100 -  No of periods
+     3. 1   -  No of duty cycles.
 
-     NOTE:      adc_test - Executable file
-                6        - ADC channel
+   Result:
+          brightness of Led will be seen as increasing order.
 
-     Result : As ADC device's value gets change, output can be seen on Terminal.
 
 
 
