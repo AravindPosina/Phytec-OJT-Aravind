@@ -1,0 +1,56 @@
+
+Pre-requisite
+
+ As i used sdcard image, so im allowed to create directory and files in rootfile system.
+ As we dont have interface in    “/etc/network/interfaces”. But it redirects to “/data/network/interface” . So i have to create interface here only.
+ but in NOR Flash, we have already data directory.
+
+
+1. for SD-CARD 
+
+	1. cd  /
+	  mkdir data
+	  cd data
+
+	2. mkdir network
+	     cd network
+	3. vi interfaces
+	       auto lo
+	       iface lo inet loopback
+	4. reboot the RB-A5D2X
+
+2. for NOR image
+
+      1. cd /data
+      2. mkdir network
+	     cd network
+      3. vi interfaces
+	       auto lo
+	       iface lo inet loopback
+      4. reboot the RB-A5D2X
+
+
+     $ ifconfig lo up
+     $ reboot the RB-A5D2X
+
+********************************************************************************************
+1. Set the Cross-compilation setup
+
+     . /opt/poky-tiny/2.5.2/environment-setup-cortexa5hf-neon-poky-linux-musleabi
+
+1. Compile the Application
+
+   1.)   ${CC} tcpechoclient.c -o client     
+
+   2.)   $gcc tcpechoserver.c -o server     
+
+
+Execution:
+	on RB-A5D2X
+
+	1. ./client  
+
+	2. ./server 
+
+       Result:
+               whatever you write at client side, you can see same data echoed by server.
