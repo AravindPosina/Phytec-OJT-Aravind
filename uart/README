@@ -1,0 +1,24 @@
+ 
+1. Set the cross compilation setup.
+ 
+ . /opt/poky-tiny/2.5.2/environment-setup-cortexa5hf-neon-poky-linux-musleabi
+
+2. Compile the Application
+
+   ${CC} 03_UART.c -o 03_UART
+   
+3. Execute
+
+  ./03_UART
+
+4. sort TX and RX from Mikrobus connectoer (M1)  with Jumper wire.
+
+   Result : whatever you are writing on RB-Board Terminal  you see same data in back.
+
+
+
+
+
+
+
+
