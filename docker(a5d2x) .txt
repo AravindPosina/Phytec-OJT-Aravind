@@ -1,0 +1,109 @@
+In ubuntu 20.04:
+----------------
+https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04
+==========================================================================================================
+Installation:
+-------------
+sudo apt update
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+apt-cache policy docker-ce
+sudo apt install docker-ce
+sudo systemctl status docker
+==========================================================================================================
+User Docker access:
+----------------------
+sudo usermod -aG docker ${USER}( as it is, dont change the name USER, brackets needed)
+su - ${USER}
+groups(verify whether docker is added at the last)
+sudo usermod -aG docker username // For adding any other user thats not logged in
+====================================groups======================================================================
+Creating Docker container with ubuntu 20.04:
+sudo docker info						       {CONTAINER ID }(sudo docker ps -a)
+sudo docker pull ubuntu:16.04  ( to undo this cmd :sudo docker rm -f  94395e5d4c84 )
+sudo docker run -it ubuntu:16.04(You will enter the docker terminal where ubuntu 16.04 is running)
+
+apt-get update(Please treat this ubuntu as a  brand new machine and install all the required tools from scratch)
+
+exit command to exit docker.
+
+following commands to be done in the host: 
+sudo docker ps -a
+	CONTAINER ID   IMAGE          COMMAND       CREATED          STATUS                      PORTS     NAMES
+	3672e12fe410   ubuntu:16.04   "/bin/bash"   53 seconds ago   Exited (0) 14 seconds ago             exciting_chatterjee
+sudo docker rename exciting_chatterjee yocto_a5d2x
+sudo docker ps -a
+	CONTAINER ID   IMAGE          COMMAND       CREATED         STATUS                     PORTS     NAMES
+	3672e12fe410   ubuntu:16.04   "/bin/bash"   8 minutes ago   Exited (0) 7 minutes ago             yocto_a5d2x
+==========================================================================================================
+Login again: 
+sudo docker start yocto_a5d2x
+sudo docker exec -it yocto_a5d2x bash   ( instead of yocto_a5d2x you can use its CONTAINER ID you can get this ID by using the command sudo docker ps -a  )
+ls /home   //Verify
+ls /root   //Verify
+
+Creating user in container - necessary for yocto compilation as root user causes errors:
+----------------------------------------------------------------------------------------
+apt-get install sudo -y
+
+adduser phytec(keep pressing enter for default values)
+usermod -aG sudo phytec
+groups phytec
+su phytec(exit to switch to root user)
+always work in the home directory( cd ~) for creating folders or downloading. same commands in linux to be followed.
+-----------------------------------------------------------------------------------------------------------
+For compiling yocto for RB-a5d2x follow these commands in docker emulated Ubuntu:16.04
+
+Build Host Packages:	sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib \
+     			build-essential chrpath socat cpio python python3 python3-pip python3-pexpect \
+     			xz-utils debianutils iputils-ping libsdl1.2-dev xterm  language-pack-en-base
+
+
+Step1: Create a directory to download the all layers.
+	 mkdir yocto_rba5d2x
+	 cd yocto_rba5d2x
+	 mkdir sources
+	 cd sources
+
+Step2: Clone meta-rba5d2x layer with the proper branch ready.
+	git clone https://github.com/rugged-board/meta-rba5d2x.git -b sumo-rba5d2x
+	
+Step3: Clone poky git repository with the proper branch ready.
+       git clone https://github.com/rugged-board/poky.git -b sumo-rba5d2x
+       
+Step4: Clone meta-openembedded git repository with the proper branch ready.
+	git clone git://git.openembedded.org/meta-openembedded -b sumo
+	
+Step5: Clone meta-iot-cloud git repository with the proper branch ready.
+	git clone https://github.com/intel-iot-devkit/meta-iot-cloud.git -b sumo
+	
+Step6: come back from the sources directory to configure the build system and start the build process.
+	cd ..
+	
+Step7: Initialize build directory.
+	source sources/poky/oe-init-build-env
+	
+SD Card Flash Images:
+Step8: For rugged board a5d2x(SDCARD)
+             i) Change the machine name to "rugged-board-a5d2x-sd1" in "conf/local.conf" as below.
+		vi conf/local.conf
+		
+	    ii) Set the machine as below and save the file.
+		MACHINE ?= "rugged-board-a5d2x-sd1"
+		
+            iii) Compile the images for SDCARD Flash using below command.
+		 bitbake rb-sd-core-image-minimal (In case of error) (export LANG="en_US.UTF-8")(export LC_ALL="en_US.UTF-8")		
+		 (for this error:
+		 ERROR: ExpansionError during parsing /home/phytec/yocto/sources/poky/../meta-rba5d2x/recipes-bsp/at91bootstrap/at91bootstrap_git.bb
+		use cmd: rm /home/phytec/yocto/sources/poky/../meta-rba5d2x/recipes-bsp/at91bootstrap/at91bootstrap_git.bb
+		 )
+		
+	    iv) After completion of this compiling please go to below path to get the SDCARD Flash images.
+		cd tmp/deploy/images/rugged-board-a5d2x-sd1/
+		
+		
+		
+		
+		
+==========================================================================================================
