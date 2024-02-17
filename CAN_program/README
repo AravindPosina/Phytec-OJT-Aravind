@@ -1,0 +1,47 @@
+Pre-requisite:
+
+NOTE:  we required 2 RB-A5D2x boards. and  boot the  board with sd card image only.
+
+* CAN protocols settings are required on both boards*
+
+1. on 1st-Board
+
+          ip link set can0 down
+          ip link set can0 type can bitrate 50000 
+          ip link set can0 up
+
+
+2. on 2nd-Board
+
+          ip link set can0 down
+          ip link set can0 type can bitrate 50000 
+          ip link set can0 up
+
+3. Set the Cross-compilation setup
+
+    . /opt/poky-tiny/2.5.2/environment-setup-cortexa5hf-neon-poky-linux-musleabi
+
+3. Compilation the Application
+      
+     ${CC} cansender.c -o cansender
+     ${CC} canreceiver.c -o canreceiver
+    
+4. Execution
+
+    1. on 1st-Board
+       ./cansender
+
+    1. on 2nd-Board
+       ./canreceiver
+
+ 
+   Result: 
+           On canreciver side..
+        
+  	  can_id  = 0x123;
+	  can_dlc = 2;
+	  data[0] = 0x11;
+	  data[1] = 0x22;
+ 
+   
+
