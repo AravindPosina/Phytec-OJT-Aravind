@@ -1,1 +1,0 @@
-int display_strrev();
