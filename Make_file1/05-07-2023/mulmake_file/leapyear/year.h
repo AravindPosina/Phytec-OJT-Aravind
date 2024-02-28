@@ -1,2 +1,0 @@
-void year(void);
-

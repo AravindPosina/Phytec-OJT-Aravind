@@ -1,2 +1,0 @@
-void num (void);
-
